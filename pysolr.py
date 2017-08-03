@@ -1274,8 +1274,23 @@ class ZooKeeper(object):
             if not data:
                 LOG.warning("No cluster state available: no collections defined?")
             else:
-                self.collections = json.loads(data.decode('utf-8'))
+                #self.collections = json.loads(data.decode('utf-8'))
+                self.collections.update(json.loads(data.decode('utf-8')))
                 LOG.info('Updated collections: %s', self.collections)
+                
+        def watchClusterDetailState(data,*args,**kwargs):
+            if not data:
+                LOG.warning("No cluster state available: no collections defined?")
+            else:
+                self.collections.update(json.loads(data.decode('utf-8')))
+                LOG.info('Updated collections: %s', self.collections)
+
+        @self.zk.ChildrenWatch(ZooKeeper.COLLECTION_STATUS)
+        def watchClusterState(children):
+                LOG.info("Updated collection: %s", children)
+                for c in children:
+                        self.zk.DataWatch(self.CLUSTER_DETAIL_STATE % c, watchClusterDetailState)
+
 
         @self.zk.ChildrenWatch(ZooKeeper.LIVE_NODES_ZKNODE)
         def watchLiveNodes(children):
