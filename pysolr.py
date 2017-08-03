@@ -1242,6 +1242,8 @@ class ZooKeeper(object):
     TRUE = 'true'
     FALSE = 'false'
     COLLECTION = 'collection'
+    COLLECTION_STATUS = '/collections'
+    CLUSTER_DETAIL_STATE = '/collections/%s/state.json'
 
     def __init__(self, zkServerAddress, timeout=15, max_retries=-1, kazoo_client=None):
         if KazooClient is None:
